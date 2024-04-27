@@ -63,10 +63,11 @@
     </style>
 </head>
 <body>
+    <iframe src="navbar.html" frameborder="0" width="100%" height="80px"></iframe>
     <div class="overlay"></div>
     <div class="container">
         <div class="rounded-3 shadow p-4 bg-white">
-            <h1 class="mb-4">Check Stock</h1>
+            <h1 class="mb-4">Check Stock : </h1>
             <div class="input-group mb-3">
                 <input type="text" class="form-control" id="product-name" placeholder="Enter product name">
                 <button class="btn btn-primary ms-2" type="button" onclick="checkStock()">Check</button>
@@ -81,7 +82,7 @@
 
         function checkStock() {
             var productName = document.getElementById("product-name").value.trim();
-
+            
             if (productName === "") {
                 stockResult.textContent = "Please enter a product name.";
             } else {
@@ -93,6 +94,40 @@
             document.getElementById("product-name").value = ""; // Clear the input field
             stockResult.textContent = ""; // Clear the stock result
         }
+        
+        function checkStock() {
+    var productName = document.getElementById("product-name").value.trim();
+
+    if (productName === "") {
+        stockResult.textContent = "Please enter a product name.";
+    } else {
+        fetch('http://localhost:3005/stock/' + encodeURIComponent(productName) + '/units', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Product not found ');
+            }
+            return response.json();
+        })
+        .then(data => {
+            stockResult.textContent = "Remaining stock for " + productName + ": " + data.units + " units";
+        })
+        .catch(error => {
+            stockResult.textContent = "Error: " + error.message;
+        });
+    }
+}
+
+    function clearInput() {
+        document.getElementById("product-name").value = ""; // Clear the input field
+        stockResult.textContent = ""; // Clear the stock result
+    }
+
+
     </script>
 </body>
 </html>
